@@ -10,6 +10,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,8 +27,8 @@ namespace TP1
         private string name;
         private Genders gender;
         private int age;
-
-        static Person[] personArray;
+        
+        static List<Person> PersonList;
 
         #endregion
 
@@ -35,7 +36,7 @@ namespace TP1
         #region Constructors
         public Person()
         {
-            personArray = new Person[100];
+            PersonList = new List<Person>();
         }
 
         public Person(string name, Genders gender, int age, int regionID)
@@ -52,41 +53,12 @@ namespace TP1
 
         #region Properties
 
-        public int PersonID
-        {
-            get
-            {
-                return this.personID;
-            }
-            set
-            {
-                this.personID = value;
-            }
-        }
+        public int PersonID { get => personID; set => personID = value; }
 
-        public string Name
-        {
-            get
-            {
-                return this.name;
-            }
-            set
-            {
-                this.name = value;
-            }
-        }
+        public string Name { get => name; set => name = value; }
+        
 
-        public Genders Gender
-        {
-            get
-            {
-                return this.gender;
-            }
-            set
-            {
-                this.gender = value;
-            }
-        }
+        public Genders Gender { get => gender; set => gender = value; }
 
         public int Age
         {
@@ -119,16 +91,16 @@ namespace TP1
         /// <returns></returns>
         public bool AddPerson(Person person)
         {
-            for (int i = 0; i < personArray.Length; i++)
+            try
             {
-                if (personArray[i] == null)
-                {
-                    personArray[i] = person;
-
-                    return true;
-                }
+                PersonList.Add(person);
             }
-            return false;
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return true;
         }
         /// <summary>
         /// Retorna o próximo id de Pessoa válido
@@ -143,9 +115,9 @@ namespace TP1
         /// Função para retornar o array de Pessoas, caso seja necessário em outra classe
         /// </summary>
         /// <returns></returns>
-        public static Person[] GetPersonArray()
+        public static List<Person> GetPersonList()
         {
-            return personArray;
+            return PersonList;
         }
 
         /// <summary>
@@ -153,11 +125,11 @@ namespace TP1
         /// </summary>
         public void ShowPerson()
         {
-            for (int i = 0; personArray[i] != null; i++)
+            foreach (var obj in PersonList)
             {
                 Console.WriteLine("");
-                Console.WriteLine("Codigo: {0} Nome: {1} Género: {2} Idade: {3} Regiao: {4}", personArray[i].PersonID,
-                    personArray[i].Name, personArray[i].Gender, personArray[i].Age, personArray[i].RegionID);
+                Console.WriteLine("Codigo: {0} Nome: {1} Género: {2} Idade: {3} Regiao: {4}", obj.PersonID, obj.Name,
+                    obj.Gender, obj.Age, obj.RegionID);
             }
         }
         #endregion

@@ -23,8 +23,9 @@ namespace TP1
 
         private static int currentCaseID;
         private int caseID;
+        private bool infected;
 
-        static Case[] caseArray;
+        static List<Case> CaseList;
         
         #endregion
 
@@ -32,13 +33,14 @@ namespace TP1
         #region Constructors
         public Case()
         {
-            caseArray = new Case[100];
+            CaseList = new List<Case>();
         }
 
-        public Case(int personId)
+        public Case(int personId, bool infected)
         {
             this.caseID = GetNextCaseID();
             this.PersonID = personId;
+            this.infected = infected;
         }
         #endregion
 
@@ -67,10 +69,9 @@ namespace TP1
         /// </summary>
         public void ShowAllCases()
         {
-            Console.WriteLine("");
-            for (int i = 0; caseArray[i] != null; i++)
+            foreach (var obj in CaseList)
             {
-                Console.WriteLine("Codigo Caso: {0} ID Pessoa: {1}", caseArray[i].CaseID, caseArray[i].PersonID);
+                Console.WriteLine("Codigo Caso: {0} ID Pessoa: {1}", obj.CaseID, obj.PersonID);
             }
         }
         /// <summary>
@@ -79,17 +80,11 @@ namespace TP1
         /// <returns></returns>
         public int CountTotalCases()
         {
-            int count = 0;
-            foreach(Case x in caseArray)
-            {
-                if(x != null)
-                    count++;
-            }
-            return count;
+            return CaseList.Count;
         }
 
         /// <summary>
-        /// Percorre o array de Pessoas à procura de pessoas com idade igual à inserida pelo utilizador
+        /// Percorre a lista de Pessoas à procura de pessoas com idade igual à inserida pelo utilizador
         /// Não soubemos como implementar a procura a partir do ID de pessoa que está guardado no array de Casos
         /// </summary>
         /// <param name="age"></param>
@@ -98,21 +93,18 @@ namespace TP1
         {
             int count = 0;
 
-            Person[] personArray = GetPersonArray();
+            List<Person> personList = GetPersonList();
 
-            foreach (Person x in personArray)
+            foreach (var obj in personList)
             {
-                if (x != null)
-                {
-                    if (x.Age == age)
-                        count++;
-                }
+                if (obj.Age == age)
+                    count++;
             }
             return count;
         }
 
         /// <summary>
-        /// Percorre o array de Pessoas à procura de pessoas com género igual ao inserifo pelo utilizador
+        /// Percorre a lista de Pessoas à procura de pessoas com género igual ao inserifo pelo utilizador
         /// Mais uma vez, não soubemos como implementar a procura a partir do ID de pessoa que está guardado no array de Casos
         /// </summary>
         /// <param name="gender"></param>
@@ -121,15 +113,24 @@ namespace TP1
         {
             int count = 0;
 
-            Person[] personArray = GetPersonArray();
+            List<Person> personList = GetPersonList();
 
-            foreach (Person x in personArray)
+            foreach (var obj in personList)
             {
-                if (x != null)
-                {
-                    if (x.Gender == gender)
-                        count++;
-                }
+                if (obj.Gender == gender)
+                    count++;
+            }
+            return count;
+        }
+
+        public int CountInfected()
+        {
+            int count = 0;
+
+            foreach (var item in CaseList)
+            {
+                if (item.infected == true)
+                    count++;
             }
             return count;
         }
@@ -143,16 +144,17 @@ namespace TP1
         /// <returns></returns>
         public bool AddCase(Case newCase)
         {
-            for (int i = 0; i < caseArray.Length; i++)
+            try
             {
-                if (caseArray[i] == null)
-                {
-                    caseArray[i] = newCase;
-
-                    return true;
-                }
+                CaseList.Add(newCase);
             }
-            return false;
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -168,9 +170,9 @@ namespace TP1
         /// Função para retornar o array de Casos, caso seja necessário noutra classe
         /// </summary>
         /// <returns></returns>
-        public static Case[] GetCaseArray()
+        public static List<Case> GetCaseList()
         {
-            return caseArray;
+            return CaseList;
         }
         #endregion
 

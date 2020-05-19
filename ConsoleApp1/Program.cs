@@ -24,8 +24,8 @@ namespace TP1
             int caseCount = 0;
 
             Regions regionsArray = new Regions();
-            Case caseArray = new Case();
-            Person personArray = new Person();
+            Case caseList = new Case();
+            Person personList = new Person();
 
             Regions region1 = new Regions("Minho");
             Regions region2 = new Regions("Algarve");
@@ -46,11 +46,11 @@ namespace TP1
             Person person4 = new Person("Joaquina", Person.Genders.F, 22, region4.RegionID);
             Person person5 = new Person("Andreia", Person.Genders.F, 33, region7.RegionID);
 
-            Case case1 = new Case(person5.PersonID);
-            Case case2 = new Case(person3.PersonID);
-            Case case3 = new Case(person1.PersonID);
-            Case case4 = new Case(person2.PersonID);
-            Case case5 = new Case(person4.PersonID);
+            Case case1 = new Case(person5.PersonID, true);
+            Case case2 = new Case(person3.PersonID, false);
+            Case case3 = new Case(person1.PersonID, false);
+            Case case4 = new Case(person2.PersonID, true);
+            Case case5 = new Case(person4.PersonID, true);
 
             #region Valida Inserir Regiões
             if (regionsArray.AddRegion(region1))
@@ -145,7 +145,7 @@ namespace TP1
 
             #region Valida Inserir Pessoas
 
-            if (personArray.AddPerson(person1))
+            if (personList.AddPerson(person1))
             {
                 Console.WriteLine("Inserido com sucesso!");
             }
@@ -153,7 +153,7 @@ namespace TP1
             {
                 Console.WriteLine("Esta sem espaco!!!");
             }
-            if (personArray.AddPerson(person2))
+            if (personList.AddPerson(person2))
             {
                 Console.WriteLine("Inserido com sucesso!");
             }
@@ -161,7 +161,7 @@ namespace TP1
             {
                 Console.WriteLine("Esta sem espaco!!!");
             }
-            if (personArray.AddPerson(person3))
+            if (personList.AddPerson(person3))
             {
                 Console.WriteLine("Inserido com sucesso!");
             }
@@ -169,7 +169,7 @@ namespace TP1
             {
                 Console.WriteLine("Esta sem espaco!!!");
             }
-            if (personArray.AddPerson(person4))
+            if (personList.AddPerson(person4))
             {
                 Console.WriteLine("Inserido com sucesso!");
             }
@@ -177,7 +177,7 @@ namespace TP1
             {
                 Console.WriteLine("Esta sem espaco!!!");
             }
-            if (personArray.AddPerson(person5))
+            if (personList.AddPerson(person5))
             {
                 Console.WriteLine("Inserido com sucesso!");
             }
@@ -188,7 +188,7 @@ namespace TP1
             #endregion
 
             #region Valida Inserir Casos
-            if (caseArray.AddCase(case1))
+            if (caseList.AddCase(case1))
             {
                 Console.WriteLine("Inserido com sucesso!");
             }
@@ -196,7 +196,7 @@ namespace TP1
             {
                 Console.WriteLine("Esta sem espaco!!!");
             }
-            if (caseArray.AddCase(case2))
+            if (caseList.AddCase(case2))
             {
                 Console.WriteLine("Inserido com sucesso!");
             }
@@ -204,7 +204,7 @@ namespace TP1
             {
                 Console.WriteLine("Esta sem espaco!!!");
             }
-            if (caseArray.AddCase(case3))
+            if (caseList.AddCase(case3))
             {
                 Console.WriteLine("Inserido com sucesso!");
             }
@@ -212,7 +212,7 @@ namespace TP1
             {
                 Console.WriteLine("Esta sem espaco!!!");
             }
-            if (caseArray.AddCase(case4))
+            if (caseList.AddCase(case4))
             {
                 Console.WriteLine("Inserido com sucesso!");
             }
@@ -220,7 +220,7 @@ namespace TP1
             {
                 Console.WriteLine("Esta sem espaco!!!");
             }
-            if (caseArray.AddCase(case5))
+            if (caseList.AddCase(case5))
             {
                 Console.WriteLine("Inserido com sucesso!");
             }
@@ -231,22 +231,22 @@ namespace TP1
             #endregion
 
             regionsArray.ShowRegion();
-            personArray.ShowPerson();
-            caseArray.ShowAllCases();
+            personList.ShowPerson();
+            caseList.ShowAllCases();
 
 
 
-            caseCount = caseArray.CountTotalCases();
-
+            caseCount = caseList.CountTotalCases();
             Console.WriteLine("Total de casos: {0}", caseCount);
 
-            
+            caseCount = caseList.CountInfected();
+            Console.WriteLine("Total de casos positivos: {0}", caseCount);
 
 
             Console.Write("Insira Idade: ");
             int age = Convert.ToInt32(Console.ReadLine());
 
-            caseCount = caseArray.CountByAge(age);
+            caseCount = caseList.CountByAge(age);
             if (caseCount > 0)
             {
                 Console.WriteLine("Numero de casos com a idade inserida: {0}", caseCount);
@@ -257,7 +257,7 @@ namespace TP1
             }
 
 
-            caseCount = caseArray.CountByGender(Person.Genders.F);
+            caseCount = caseList.CountByGender(Person.Genders.F);
             if (caseCount > 0)
             {
                 Console.WriteLine("Numero de casos com o género Feminino: {0}", caseCount);
@@ -267,7 +267,7 @@ namespace TP1
                 Console.WriteLine("Não há casos com o género {0}", Person.Genders.M);
             }
 
-            caseCount = caseArray.CountByGender(Person.Genders.M);
+            caseCount = caseList.CountByGender(Person.Genders.M);
             if (caseCount > 0)
             {
                 Console.WriteLine("Numero de casos com o género Masculino: {0}", caseCount);
