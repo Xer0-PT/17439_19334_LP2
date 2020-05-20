@@ -18,7 +18,7 @@ using System.Linq;
 namespace Pandemic
 {
     [Serializable]
-    class Person : Regions
+    public class Person : Regions
     {
         #region Member Variables
 
@@ -95,7 +95,7 @@ namespace Pandemic
             }
             catch (Exception e)
             {
-                Console.WriteLine("Erro: " + e);
+                Console.WriteLine("Erro: " + e.Message);
             }
             return false;
         }

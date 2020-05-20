@@ -10,6 +10,7 @@
  */
 
 using System;
+using Pandemic;
 
 namespace TP1
 {

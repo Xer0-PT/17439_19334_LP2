@@ -17,7 +17,7 @@ using System.Linq;
 namespace Pandemic
 {
     [Serializable]
-    class Regions
+    public class Regions
     {
         #region Member Variables
 

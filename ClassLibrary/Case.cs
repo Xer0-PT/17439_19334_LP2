@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace Pandemic
 {
-    class Case : Person
+    public class Case : Person
     {
         #region Member Variables
 
