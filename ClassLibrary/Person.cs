@@ -15,7 +15,7 @@ using System.IO;
 using System.Linq;
 
 
-namespace TP1
+namespace Pandemic
 {
     [Serializable]
     class Person : Regions

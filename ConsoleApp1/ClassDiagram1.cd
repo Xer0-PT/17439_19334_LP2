@@ -3,7 +3,7 @@
   <Class Name="TP1.Case">
     <Position X="2" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAAQCAAQgAEAAAAAAAQACAAAQAEAAAAAAAAABAAAAA=</HashCode>
+      <HashCode>EAAAYAAAQhAEAAAAAAAQAAABAQAEAAAAABAAABAAAAA=</HashCode>
       <FileName>Case.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -20,7 +20,7 @@
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>QAACAAAAAAAAQACAAEAAgAQAAABEAAAgAACAAAAAAEQ=</HashCode>
+      <HashCode>QAACEAAAAAAAQACAAEAAgAQAIAFEAAAgAACAAAAAAEA=</HashCode>
       <FileName>Person.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -34,7 +34,7 @@
   <Class Name="TP1.Regions">
     <Position X="9.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AACAAAAAgBAARAAAAAAAAAAAAAAAAEAAAABAAABQAAA=</HashCode>
+      <HashCode>AACAAAAAgBAAQAIAAAAAAAAAAAAAAEAAAABAAABQAAA=</HashCode>
       <FileName>Regions.cs</FileName>
     </TypeIdentifier>
   </Class>

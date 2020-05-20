@@ -12,7 +12,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TP1
+namespace Pandemic
 {
     class Case : Person
     {
