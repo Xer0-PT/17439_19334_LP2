@@ -1,41 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="TP1.Case">
-    <Position X="2" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>EAAAYAAAQhAEAAAAAAAQAAABAQAEAAAAABAAABAAAAA=</HashCode>
-      <FileName>Case.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="TP1.Person">
-    <Position X="5.5" Y="0.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
-    <NestedTypes>
-      <Enum Name="TP1.Person.Genders" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Person.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>QAACEAAAAAAAQACAAEAAgAQAIAFEAAAgAACAAAAAAEA=</HashCode>
-      <FileName>Person.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="TP1.Program">
     <Position X="12.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Program.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="TP1.Regions">
-    <Position X="9.5" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AACAAAAAgBAAQAIAAAAAAAAAAAAAAEAAAABAAABQAAA=</HashCode>
-      <FileName>Regions.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
