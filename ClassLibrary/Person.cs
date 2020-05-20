@@ -147,6 +147,8 @@ namespace Pandemic
         {
             try
             {
+                //person.PersonID = GetNextPersonID();
+
                 PersonList.Add(person);
                 return true;
             }

@@ -25,9 +25,9 @@ namespace Pandemic
         private int regionID;
         private string region;
 
-        private const string FILEPATH = @"E:\Escola\2_Semestre\LP_2\TP1_V1.1\Saude_Publica\Files\Regions.csv";
+        private const string FILEPATH = @".\Regions.csv";
 
-        static List<Regions> regionsList;
+        static List<Regions> regionsList = new List<Regions>();
 
         #endregion
 
@@ -37,7 +37,8 @@ namespace Pandemic
 
         public Regions()
         {
-            regionsList = new List<Regions>();
+            this.regionID = 0;
+            this.region = "";
         }
 
         public Regions(string region)
@@ -81,7 +82,7 @@ namespace Pandemic
 
         #region Functions
 
-        public void LoadRegionsList()
+        public void LoadRegionsFromFile()
         {
             List<string> lines = File.ReadAllLines(FILEPATH).ToList();
 
