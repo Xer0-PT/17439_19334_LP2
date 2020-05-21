@@ -13,8 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-
 
 namespace Pandemic
 {
@@ -31,9 +31,10 @@ namespace Pandemic
         private Genders gender;
         private int age;
 
-        private const string FILEPATH = @".\Person.csv";
+        private const string CSVFILEPATH = @".\Person.csv";
+        private const string BINARYFILEPATH = @".\Person.dat";
 
-        static List<Person> PersonList = new List<Person>();
+        static List<Person> personList = new List<Person>();
 
         #endregion
 
@@ -81,18 +82,65 @@ namespace Pandemic
 
         #region Functions
 
-        public bool SavePersonsToFile()
+        public bool SavePersonsToBinaryFile()
+        {
+            try
+            {
+                FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Create);
+                BinaryFormatter bin = new BinaryFormatter();
+                bin.Serialize(fs, personList);
+                fs.Close();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine("Erro: " + e.Message);
+            }
+            return false;
+        }
+
+        public void LoadPersonsFromBinaryFile()
+        {
+            FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Open, FileAccess.Read);
+            BinaryFormatter bin = new BinaryFormatter();
+
+            try
+            {
+                if (File.Exists(BINARYFILEPATH))
+                {
+                    personList = (List<Person>)bin.Deserialize(fs);
+                }
+                else
+                {
+                    fs = File.Create(BINARYFILEPATH);
+                    bin.Serialize(fs, personList);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Erro: " + e.Message);
+            }
+
+            fs.Close();
+
+            Person aux = personList.Last();
+            currentPersonID = aux.personID;
+        }
+
+        public bool SavePersonsToCSVFile()
         {
             try
             {
                 List<string> output = new List<string>();
 
-                foreach (var obj in PersonList)
+                foreach (var obj in personList)
                 {
                     output.Add(obj.PersonID + ";" + obj.FirstName + ";" + obj.LastName + ";" + obj.Gender + ";" + obj.Age + ";" + obj.RegionID);
                 }
 
-                File.WriteAllLines(FILEPATH, output);
+                File.WriteAllLines(CSVFILEPATH, output);
 
                 return true;
             }
@@ -103,9 +151,9 @@ namespace Pandemic
             return false;
         }
 
-        public void LoadPersonsFromFile()
+        public void LoadPersonsFromCSVFile()
         {
-            List<string> lines = File.ReadAllLines(FILEPATH).ToList();
+            List<string> lines = File.ReadAllLines(CSVFILEPATH).ToList();
 
             foreach (var line in lines)
             {
@@ -120,16 +168,16 @@ namespace Pandemic
                 newPerson.Age = Convert.ToInt32(entrie[4]);
                 newPerson.RegionID = Convert.ToInt32(entrie[5]);
 
-                PersonList.Add(newPerson);
+                personList.Add(newPerson);
             }
 
-            Person aux = PersonList.Last();
+            Person aux = personList.Last();
             currentPersonID = aux.PersonID;
         }
 
         public bool ValidatePersonID(int id)
         {
-            foreach (var item in PersonList)
+            foreach (var item in personList)
             {
                 if (item.PersonID == id)
                     return true;
@@ -149,7 +197,7 @@ namespace Pandemic
         {
             try
             {
-                PersonList.Add(person);
+                personList.Add(person);
                 return true;
             }
             catch (Exception e)
@@ -162,10 +210,10 @@ namespace Pandemic
         /// Retorna o próximo id de Pessoa válido
         /// </summary>
         /// <returns></returns>
-        protected int GetNextPersonID()
+        /*protected int GetNextPersonID()
         {
             return ++currentPersonID;
-        }
+        }*/
 
         /// <summary>
         /// Função para retornar o array de Pessoas, caso seja necessário em outra classe
@@ -173,7 +221,7 @@ namespace Pandemic
         /// <returns></returns>
         public static List<Person> GetPersonList()
         {
-            return PersonList;
+            return personList;
         }
 
         /// <summary>
@@ -181,7 +229,7 @@ namespace Pandemic
         /// </summary>
         public void ShowPerson()
         {
-            foreach (var obj in PersonList)
+            foreach (var obj in personList)
             {
                 Console.WriteLine("Codigo: {0}\tNome: {1} {2}\tGénero: {3}\tIdade: {4}\tRegiao: {5}", obj.PersonID, obj.FirstName, obj.LastName,
                     obj.Gender, obj.Age, obj.RegionID);

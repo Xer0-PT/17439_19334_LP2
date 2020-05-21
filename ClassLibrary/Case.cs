@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Pandemic
 {
@@ -26,9 +27,10 @@ namespace Pandemic
         private int caseID;
         private bool infected;
 
-        static List<Case> CaseList = new List<Case>();
+        static List<Case> caseList = new List<Case>();
 
         private const string FILEPATH = @".\Case.csv";
+        private const string BINARYFILEPATH = @".\Case.csv";
 
         #endregion
 
@@ -60,7 +62,53 @@ namespace Pandemic
         #endregion
 
         #region Functions
-        public void LoadCasesFromFile()
+        public void LoadCasesFromBinaryFile()
+        {
+            FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Open, FileAccess.Read);
+            BinaryFormatter bin = new BinaryFormatter();
+
+            try
+            {
+                if (File.Exists(BINARYFILEPATH))
+                {
+                    caseList = (List<Case>)bin.Deserialize(fs);
+                }
+                else
+                {
+                    fs = File.Create(BINARYFILEPATH);
+                    bin.Serialize(fs, caseList);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Erro: " + e.Message);
+            }
+
+            fs.Close();
+
+            Case aux = caseList.Last();
+            currentCaseID = aux.CaseID;
+        }
+
+        public bool SaveCasesToBinaryFile()
+        {
+            try
+            {
+                FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Create);
+                BinaryFormatter bin = new BinaryFormatter();
+                bin.Serialize(fs, caseList);
+                fs.Close();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Erro: " + e.Message);
+            }
+            return false;
+        }
+
+        public void LoadCasesFromCSVFile()
         {
             List<string> lines = File.ReadAllLines(FILEPATH).ToList();
 
@@ -74,20 +122,20 @@ namespace Pandemic
                 newCase.PersonID = Convert.ToInt32(entrie[1]);
                 newCase.Infected = bool.Parse(entrie[2]);
 
-                CaseList.Add(newCase);
+                caseList.Add(newCase);
             }
 
-            Case aux = CaseList.Last();
+            Case aux = caseList.Last();
             currentCaseID = aux.CaseID;
         }
 
-        public bool SaveCasesToFile()
+        public bool SaveCasesToCSVFile()
         {
             try
             {
                 List<string> output = new List<string>();
 
-                foreach (var obj in CaseList)
+                foreach (var obj in caseList)
                 {
                     output.Add(obj.CaseID + ";" + obj.PersonID + ";" + obj.Infected);
                 }
@@ -109,7 +157,7 @@ namespace Pandemic
         /// </summary>
         public void ShowAllCases()
         {
-            foreach (var obj in CaseList)
+            foreach (var obj in caseList)
             {
                 Console.WriteLine("Cdigo: {0}\tID Pessoa: {1}\tInfectado: {2}", obj.CaseID, obj.PersonID, obj.Infected);
             }
@@ -120,7 +168,7 @@ namespace Pandemic
         /// <returns></returns>
         public int CountTotalCases()
         {
-            return CaseList.Count;
+            return caseList.Count;
         }
 
         /// <summary>
@@ -141,7 +189,7 @@ namespace Pandemic
             if (age < 0)
                 age = -age;
 
-            foreach (var caso in CaseList)
+            foreach (var caso in caseList)
             {
                 foreach (var person in personList)
                 {
@@ -174,7 +222,7 @@ namespace Pandemic
 
             List<Person> personList = GetPersonList();
 
-            foreach (var caso in CaseList)
+            foreach (var caso in caseList)
             {
                 foreach (var person in personList)
                 {
@@ -199,7 +247,7 @@ namespace Pandemic
         {
             int count = 0;
 
-            foreach (var item in CaseList)
+            foreach (var item in caseList)
             {
                 if (item.infected == true)
                     count++;
@@ -216,7 +264,7 @@ namespace Pandemic
         {
             try
             {
-                CaseList.Add(newCase);
+                caseList.Add(newCase);
                 return true;
             }
             catch (Exception e)
@@ -228,7 +276,7 @@ namespace Pandemic
 
         public bool CheckIfPersonHasCase(int id)
         {
-            foreach (var caso in CaseList)
+            foreach (var caso in caseList)
             {
                 if (caso.PersonID == id)
                     return true;
@@ -240,19 +288,19 @@ namespace Pandemic
         /// Retorna o próximo ID de Caso válido
         /// </summary>
         /// <returns></returns>
-        protected private int GetNextCaseID()
+/*        protected private int GetNextCaseID()
         {
             return ++currentCaseID;
-        }
+        }*/
 
         /// <summary>
         /// Função para retornar a lista de Casos, caso seja necessário noutra classe
         /// </summary>
         /// <returns></returns>
-        public static List<Case> GetCaseList()
+/*        public static List<Case> GetCaseList()
         {
-            return CaseList;
-        }
+            return caseList;
+        }*/
         #endregion
     }
 }

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Runtime.Serialization.Formatters.Binary;
 
 [assembly: CLSCompliant(true)]
 
@@ -30,6 +31,7 @@ namespace Pandemic
         private string region;
 
         private const string FILEPATH = @".\Regions.csv";
+        private const string BINARYFILEPATH = @".\Regions.dat";
 
         static List<Regions> regionsList = new List<Regions>();
 
@@ -63,7 +65,54 @@ namespace Pandemic
 
         #region Functions
 
-        public void LoadRegionsFromFile()
+        public void LoadRegionsFromBinaryFile()
+        {
+            FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Open, FileAccess.Read);
+            BinaryFormatter bin = new BinaryFormatter();
+
+            try
+            {
+                if (File.Exists(BINARYFILEPATH))
+                {
+                    regionsList = (List<Regions>)bin.Deserialize(fs);
+                }
+                else
+                {
+                    fs = File.Create(BINARYFILEPATH);
+                    bin.Serialize(fs, regionsList);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Erro: " + e.Message);
+            }
+
+            fs.Close();
+
+            Regions aux = regionsList.Last();
+            currentRegionID = aux.regionID;
+        }
+
+        public bool SaveRegionsToBinaryFile()
+        {
+            try
+            {
+                FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Create);
+                BinaryFormatter bin = new BinaryFormatter();
+                bin.Serialize(fs, regionsList);
+                fs.Close();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine("Erro: " + e.Message);
+            }
+            return false;
+        }
+
+        public void LoadRegionsFromCSVFile()
         {
             List<string> lines = File.ReadAllLines(FILEPATH).ToList();
 
@@ -78,9 +127,12 @@ namespace Pandemic
 
                 regionsList.Add(newRegion);
             }
+
+            Regions aux = regionsList.Last();
+            currentRegionID = aux.regionID;
         }
 
-        public bool SaveRegionsToFile()
+        public bool SaveRegionsToCSVFile()
         {
             try
             {
@@ -126,10 +178,10 @@ namespace Pandemic
         /// Retorna o próximo ID de Região válido
         /// </summary>
         /// <returns></returns>
-        protected private int GetNextRegionID()
+/*        protected private int GetNextRegionID()
         {
             return ++currentRegionID;
-        }
+        }*/
 
         /// <summary>
         /// Função para imprimir todas as regiões

@@ -33,9 +33,15 @@ namespace TP1
             Case defaultCase = new Case();
             Person defaultPerson = new Person();
 
-            defaultRegion.LoadRegionsFromFile();
-            defaultCase.LoadCasesFromFile();
-            defaultPerson.LoadPersonsFromFile();
+            defaultRegion.LoadRegionsFromCSVFile();
+            defaultCase.LoadCasesFromCSVFile();
+            //defaultPerson.LoadPersonsFromCSVFile();
+
+            //Load Person from BINARY
+            defaultPerson.LoadPersonsFromBinaryFile();
+
+            //Save Person to BINARY
+            //defaultPerson.SavePersonsToBinaryFile();
 
             Console.WriteLine("---\t\tListagem de Regiões Existentes\t\t---");
             Console.WriteLine();
@@ -215,9 +221,12 @@ namespace TP1
             defaultPerson.ShowPerson();
             Console.WriteLine("_______________________________________________________________\n\n");
 
-            defaultPerson.SavePersonsToFile();
-            defaultCase.SaveCasesToFile();
-            defaultRegion.SaveRegionsToFile();
+            //defaultPerson.SavePersonsToCSVFile();
+            defaultCase.SaveCasesToCSVFile();
+            defaultRegion.SaveRegionsToCSVFile();
+
+            //Save Person to BINARY
+            defaultPerson.SavePersonsToBinaryFile();
 
             Console.WriteLine("Prima qualquer tecla para sair.");
             Console.ReadKey();
