@@ -12,6 +12,8 @@
 using System;
 using Pandemic;
 
+[assembly: CLSCompliant(true)]
+
 namespace TP1
 {
     class Program

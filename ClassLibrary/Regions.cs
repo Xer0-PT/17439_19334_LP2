@@ -15,8 +15,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
+[assembly: CLSCompliant(true)]
+
 namespace Pandemic
 {
+    [CLSCompliant(true)]
     [Serializable]
     public class Regions
     {
@@ -31,7 +34,6 @@ namespace Pandemic
         static List<Regions> regionsList = new List<Regions>();
 
         #endregion
-
 
         #region Constructors
         public Regions()

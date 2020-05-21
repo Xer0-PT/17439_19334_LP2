@@ -15,8 +15,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
+
 namespace Pandemic
 {
+    [CLSCompliant(true)]
     [Serializable]
     public class Person : Regions
     {

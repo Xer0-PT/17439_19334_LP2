@@ -17,11 +17,11 @@ using System.Threading;
 
 namespace Pandemic
 {
+    [CLSCompliant(true)]
     [Serializable]
     public class Case : Person
     {
         #region Member Variables
-
         private static int currentCaseID;
         private int caseID;
         private bool infected;
@@ -49,7 +49,6 @@ namespace Pandemic
         }
         #endregion
 
-
         #region Properties
 
         public int CurrentCaseID { get => currentCaseID; }
@@ -59,7 +58,6 @@ namespace Pandemic
         public bool Infected { get => this.infected; set => this.infected = value; }
 
         #endregion
-
 
         #region Functions
         public void LoadCasesFromFile()
