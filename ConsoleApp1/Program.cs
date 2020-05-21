@@ -329,6 +329,8 @@ namespace TP1
 
             Console.WriteLine();
 
+            defaultCase.SaveCasesToFile();
+
             //Contar por idade inserida pelo utilizador
             do
             {
@@ -365,7 +367,7 @@ namespace TP1
                     Console.WriteLine("Insira o género a procurar. [F] ou [M]");
                     gender = Console.ReadLine();
 
-                    if ((gender != "M") || (gender != "F"))
+                    if ((gender != "M") && (gender != "F"))
                     {
                         aux = false;
                         Console.WriteLine("Género Inválido!");
@@ -385,16 +387,23 @@ namespace TP1
                 }
             } while (aux != true);
 
-
-            defaultPerson.SavePersonsToFile();
             
             Console.WriteLine();
             Console.WriteLine();
 
-            /*Person person6 = new Person("asdasd", "asdasdasd", Person.Genders.F, 33, 7);
-            defaultPerson.AddPerson(person6);
+            Person personTeste = new Person("asdasd", "asdasdasd", Person.Genders.F, 33, 7);
+            defaultPerson.AddPerson(personTeste);
 
-            Console.WriteLine("Ultimo ID: " + defaultPerson.CurrentPersonID);*/
+            //Console.WriteLine("Ultimo ID Pessoa: " + defaultPerson.CurrentPersonID);
+
+            Case caseTeste = new Case(19, false);
+            defaultCase.AddCase(caseTeste);
+
+            defaultPerson.SavePersonsToFile();
+            defaultCase.SaveCasesToFile();
+
+            //Console.WriteLine("Ultimo ID Caso: " + defaultCase.CurrentCaseID);
+
             Console.ReadKey();
         }
     }

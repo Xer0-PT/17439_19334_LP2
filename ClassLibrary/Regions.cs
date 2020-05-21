@@ -32,9 +32,7 @@ namespace Pandemic
         #endregion
 
 
-
         #region Constructors
-
         public Regions()
         {
             this.regionID = 0;
@@ -43,40 +41,19 @@ namespace Pandemic
 
         public Regions(string region)
         {
-            this.regionID = GetNextRegionID();
-            this.region = region;
+            this.RegionID = GetNextRegionID();
+            this.Region = region;
         }
-
         #endregion
-
 
 
         #region Properties
 
-        public int RegionID
-        {
-            get
-            {
-                return this.regionID;
-            }
-            set
-            {
-                this.regionID = value;
-            }
-        }
+        public int CurrentRegionID { get => currentRegionID; }
 
-        public string Region
-        {
-            get
-            {
-                return this.region;
-            }
-            set
-            {
-                this.region = value;
-            }
-        }
+        public int RegionID { get; set; }
 
+        public string Region { get => region; set => region = value; }
 
         #endregion
 
@@ -99,11 +76,31 @@ namespace Pandemic
             }
         }
 
+        public bool SaveRegionsToFile()
+        {
+            try
+            {
+                List<string> output = new List<string>();
+
+                foreach (var obj in regionsList)
+                {
+                    output.Add(obj.RegionID + ";" + obj.Region);
+                }
+
+                File.WriteAllLines(FILEPATH, output);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Erro: " + e.Message);
+            }
+            return false;
+        }
+
 
         /// <summary>
-        /// Função que percorre o array à procura de um espaço livre
-        /// Retorna true se houver espaço livre e guarda lá os dados
-        /// Retorna false se não houver espaço livre
+        /// Função que adiciona uma Região à lista de Regiões
         /// </summary>
         /// <param name="region"></param>
         /// <returns></returns>
@@ -141,9 +138,6 @@ namespace Pandemic
             }
         }
 
-        #endregion
-
-        #region Enums
         #endregion
     }
 }

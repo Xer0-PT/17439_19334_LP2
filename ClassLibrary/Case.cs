@@ -41,9 +41,9 @@ namespace Pandemic
 
         public Case(int personId, bool infected)
         {
-            this.caseID = GetNextCaseID();
+            this.CaseID = GetNextCaseID();
             this.PersonID = personId;
-            this.infected = infected;
+            this.Infected = infected;
         }
         #endregion
 
@@ -72,13 +72,37 @@ namespace Pandemic
 
                 newCase.CaseID = Convert.ToInt32(entrie[0]);
                 newCase.PersonID = Convert.ToInt32(entrie[1]);
-                newCase.Infected = (bool)Boolean.TryParse(entrie[2], out infected);
+                newCase.Infected = bool.Parse(entrie[2]);
 
                 CaseList.Add(newCase);
             }
 
             Case aux = CaseList.Last();
             currentCaseID = aux.CaseID;
+
+            Console.WriteLine("currentCaseID: " + currentCaseID);
+        }
+
+        public bool SaveCasesToFile()
+        {
+            try
+            {
+                List<string> output = new List<string>();
+
+                foreach (var obj in CaseList)
+                {
+                    output.Add(obj.CaseID + ";" + obj.PersonID + ";" + obj.Infected);
+                }
+
+                File.WriteAllLines(FILEPATH, output);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Erro: " + e.Message);
+            }
+            return false;
         }
 
 
@@ -93,7 +117,7 @@ namespace Pandemic
             }
         }
         /// <summary>
-        /// Percorre o array de Casos e contabiliza todos os campos com dados
+        /// Retorna o número de Casos existentes
         /// </summary>
         /// <returns></returns>
         public int CountTotalCases()
@@ -102,8 +126,11 @@ namespace Pandemic
         }
 
         /// <summary>
-        /// Percorre a lista de Pessoas à procura de pessoas com idade igual à inserida pelo utilizador
-        /// Não soubemos como implementar a procura a partir do ID de pessoa que está guardado no array de Casos
+        /// Percorre cada Caso e compara o ID de Pessoa com cada ID na lista de Pessoas.
+        /// Se o ID de Pessoa existir na lista de Casos, verifica se a idade da Pessoa
+        /// é igual à idade inserida pelo utilizador, se for igual incrementa o contador.
+        /// Dando assim a contagem de Pessoas, com idade igual à inserida pelo utilizador,
+        /// que realmente representa um Caso.
         /// </summary>
         /// <param name="age"></param>
         /// <returns></returns>
@@ -114,36 +141,33 @@ namespace Pandemic
             List<Person> personList = GetPersonList();
 
             if (age < 0)
-                age = - age;
+                age = -age;
 
-            foreach (var obj in personList)
+            foreach (var caso in CaseList)
             {
-                if (obj.Age == age)
-                    count++;
+                foreach (var person in personList)
+                {
+                    if (caso.PersonID == person.PersonID)
+                    {
+                        if (person.Age == age)
+                        {
+                            count++;
+                        }
+                    }
+                }
             }
             return count;
         }
 
         /// <summary>
-        /// Percorre a lista de Pessoas à procura de pessoas com género igual ao inserifo pelo utilizador
-        /// Mais uma vez, não soubemos como implementar a procura a partir do ID de pessoa que está guardado no array de Casos
+        /// Percorre cada Caso e compara o ID de Pessoa com cada ID na lista de Pessoas.
+        /// Se o ID de Pessoa existir na lista de Casos, verifica se o género da Pessoa
+        /// é igual ao género inserido pelo utilizador, se for igual incrementa o contador.
+        /// Dando assim a contagem de Pessoas, com género igual ao inserido pelo utilizador,
+        /// que realmente representa um Caso.
         /// </summary>
         /// <param name="gender"></param>
         /// <returns></returns>
-/*        public int CountByGender(Genders gender)
-        {
-            int count = 0;
-
-            List<Person> personList = GetPersonList();
-
-            foreach (var obj in personList)
-            {
-                if (obj.Gender == gender)
-                    count++;
-            }
-            return count;
-        }*/
-
         public int CountByGender(string gender)
         {
             int count = 0;
@@ -152,16 +176,25 @@ namespace Pandemic
 
             List<Person> personList = GetPersonList();
 
-            foreach (var obj in personList)
+            foreach (var caso in CaseList)
             {
-                if (obj.Gender == auxGender)
-                    count++;
+                foreach (var person in personList)
+                {
+                    if (caso.PersonID == person.PersonID)
+                    {
+                        if (person.Gender == auxGender)
+                        {
+                            count++;
+                        }
+                    }
+                }
             }
             return count;
         }
 
         /// <summary>
-        /// Conta o número de infectados
+        /// Percorre cada Caso, se se tratar de um infectado incrementa o contador.
+        /// Devolvendo o número de infectados.
         /// </summary>
         /// <returns></returns>
         public int CountInfected()
@@ -177,9 +210,7 @@ namespace Pandemic
         }
 
         /// <summary>
-        /// Função que percorre o array à procura de um espaço livre
-        /// Retorna true se houver espaço livre e guarda lá os dados
-        /// Retorna false se não houver espaço livre
+        /// Função que adiciona o novo Caso à lista de Casos
         /// </summary>
         /// <param name="newCase"></param>
         /// <returns></returns>
@@ -207,17 +238,13 @@ namespace Pandemic
         }
 
         /// <summary>
-        /// Função para retornar o array de Casos, caso seja necessário noutra classe
+        /// Função para retornar a lista de Casos, caso seja necessário noutra classe
         /// </summary>
         /// <returns></returns>
         public static List<Case> GetCaseList()
         {
             return CaseList;
         }
-        #endregion
-
-
-        #region Enums
         #endregion
     }
 }

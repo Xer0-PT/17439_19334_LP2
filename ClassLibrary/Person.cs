@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-
 namespace Pandemic
 {
     [Serializable]
@@ -48,11 +47,11 @@ namespace Pandemic
 
         public Person(string firstName, string lastName, Genders gender, int age, int regionID)
         {
-            this.personID = GetNextPersonID();
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.gender = gender;
-            this.age = age;
+            this.PersonID = GetNextPersonID();
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.Gender = gender;
+            this.Age = age;
             this.RegionID = regionID;
         }
 
