@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Pandemic
 {
@@ -41,7 +42,8 @@ namespace Pandemic
 
         public Regions(string region)
         {
-            this.RegionID = GetNextRegionID();
+            //this.RegionID = GetNextRegionID();
+            this.regionID = Interlocked.Increment(ref currentRegionID);
             this.Region = region;
         }
         #endregion

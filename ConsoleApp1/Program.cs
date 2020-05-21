@@ -28,26 +28,32 @@ namespace TP1
             string gender;
 
             Regions defaultRegion = new Regions();
-
             Case defaultCase = new Case();
-
             Person defaultPerson = new Person();
 
             defaultRegion.LoadRegionsFromFile();
             defaultCase.LoadCasesFromFile();
-
-            defaultCase.ShowAllCases();
-
-            Console.WriteLine("Listagem de Pessoas");
-            Console.WriteLine();
-
             defaultPerson.LoadPersonsFromFile();
+
+            Console.WriteLine("---\t\tListagem de Regiões Existentes\t\t---");
+            Console.WriteLine();
+            defaultRegion.ShowRegion();
+            Console.WriteLine("_______________________________________________________________\n\n");
+
+            Console.WriteLine("---\t\tListagem de Casos Existentes\t\t---");
+            Console.WriteLine();
+            defaultCase.ShowAllCases();
+            Console.WriteLine("_______________________________________________________________\n\n");
+
+            Console.WriteLine("---\t\tListagem de Pessoas Existentes\t\t---");
+            Console.WriteLine();
             defaultPerson.ShowPerson();
+            Console.WriteLine("_______________________________________________________________\n\n");
 
             do
             {
                 Console.WriteLine();
-                Console.WriteLine("Inserir Caso");
+                Console.WriteLine("---\t\tInserir Caso\t\t---");
                 try
                 {
                     Console.Write("Qual o ID da pessoa com suspeitas de virus: ");
@@ -56,7 +62,12 @@ namespace TP1
 
                     if (defaultPerson.ValidatePersonID(id) == false)
                     {
-                        Console.WriteLine("Id de pessoa não existe!");
+                        Console.WriteLine("ID de pessoa não existe!");
+                        aux = false;
+                    }
+                    else if (defaultCase.CheckIfPersonHasCase(id) == true)
+                    {
+                        Console.WriteLine("Esta pessoa já está registada num caso!.");
                         aux = false;
                     }
                     else
@@ -86,7 +97,7 @@ namespace TP1
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Opcao Invalida");
+                                    Console.WriteLine("Opção Inválida");
                                     aux = false;
                                 }
                             }
@@ -105,232 +116,16 @@ namespace TP1
                 }
             } while (aux != true);
 
-            //Importar Regiões
-/*            Regions region1 = new Regions("Minho");
-            Regions region2 = new Regions("Algarve");
-            Regions region3 = new Regions("Alto Alentejo");
-            Regions region4 = new Regions("Estremadura");
-            Regions region5 = new Regions("Trás - os - Montes e Alto Douro");
-            Regions region6 = new Regions("Douro Litoral");
-            Regions region7 = new Regions("Beira Litoral");
-            Regions region8 = new Regions("Beira Alta");
-            Regions region9 = new Regions("Beira Baixa");
-            Regions region10 = new Regions("Ribatejo");
-            Regions region11 = new Regions("Baixo Alentejo");*/
-
-            //Adicionar Pessoas
-/*            Person person1 = new Person("Joel", "Martins", Person.Genders.M, 30, region1.RegionID);
-            Person person2 = new Person("José", "Matos", Person.Genders.M, 30, region2.RegionID);
-            Person person3 = new Person("Alexandra", "Silva", Person.Genders.F, 40, region3.RegionID);
-            Person person4 = new Person("Joaquina", "Santos", Person.Genders.F, 22, region4.RegionID);
-            Person person5 = new Person("Andreia", "Barrete", Person.Genders.F, 33, region7.RegionID);
-            Person person6 = new Person("asdasd", "asdasdasd", Person.Genders.F, 33, region7.RegionID);*/
-
-            //Adicionar Casos
-/*            Case case2 = new Case(person3.PersonID, false);
-            Case case3 = new Case(person1.PersonID, false);
-            Case case4 = new Case(person2.PersonID, true);
-            Case case5 = new Case(person4.PersonID, true);*/
-
-            #region Valida Inserir Regiões
-            /*if (regionsArray.AddRegion(region1))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (regionsArray.AddRegion(region2))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (regionsArray.AddRegion(region3))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (regionsArray.AddRegion(region4))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (regionsArray.AddRegion(region5))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (regionsArray.AddRegion(region6))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (regionsArray.AddRegion(region7))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (regionsArray.AddRegion(region8))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (regionsArray.AddRegion(region9))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (regionsArray.AddRegion(region10))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (regionsArray.AddRegion(region11))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }*/
-            #endregion
-
-            #region Valida Inserir Pessoas
-/*
-            if (defaultPerson.AddPerson(person1))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (defaultPerson.AddPerson(person2))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (defaultPerson.AddPerson(person3))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (defaultPerson.AddPerson(person4))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (defaultPerson.AddPerson(person5))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }*/
-            #endregion
-
-            #region Valida Inserir Casos
-            /*if (caseList.AddCase(case1))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (caseList.AddCase(case2))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (caseList.AddCase(case3))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (caseList.AddCase(case4))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }
-            if (caseList.AddCase(case5))
-            {
-                Console.WriteLine("Inserido com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("Esta sem espaco!!!");
-            }*/
-            #endregion
-
-            //Mostrar Regiões
-            defaultRegion.ShowRegion();
-            Console.WriteLine();
-
-            //Mostrar Casos
-            defaultCase.ShowAllCases();
-            Console.WriteLine();
-
 
             //Mostrar Total de Casos
             caseCount = defaultCase.CountTotalCases();
-            Console.WriteLine("Total de casos: {0}", caseCount);
+            Console.WriteLine("---\t\tTotal de casos: {0}\t\t---", caseCount);
 
             //Mostrar Total de Casos defaultCase
             caseCount = defaultCase.CountInfected();
-            Console.WriteLine("Total de casos positivos: {0}", caseCount);
+            Console.WriteLine("---\t\tTotal de casos positivos: {0}\t\t---", caseCount);
 
-            Console.WriteLine();
-
-            defaultCase.SaveCasesToFile();
-
+            Console.WriteLine("\n\n");
             //Contar por idade inserida pelo utilizador
             do
             {
@@ -358,6 +153,8 @@ namespace TP1
             {
                 Console.WriteLine("Não há casos com idade igual a {0}", age);
             }
+
+            Console.WriteLine("\n\n");
 
             //Mostrar casos por género inserido pelo utilizador
             do
@@ -387,23 +184,40 @@ namespace TP1
                 }
             } while (aux != true);
 
-            
+            Console.WriteLine("\n\n");
+            Console.WriteLine("Prima qualquer tecla para continuar.");
+            Console.ReadKey();
+            Console.WriteLine("\n\n");
+            Console.WriteLine("A inserir duas novas pessoas.");
+            Console.WriteLine("A inserir dois novos casos.");
+            Console.WriteLine("Prima qualquer tecla para continuar.");
+            Console.ReadKey();
+
+            Person personExtra1 = new Person("Extra_1", "Extra_1", Person.Genders.F, 33, 7);
+            Person personExtra2 = new Person("Extra_2", "Extra_2", Person.Genders.M, 38, 4);
+            defaultPerson.AddPerson(personExtra1);
+            defaultPerson.AddPerson(personExtra2);
+
+            Case caseExtra1 = new Case(-1, false);
+            Case caseExtra2 = new Case(-2, true);
+            defaultCase.AddCase(caseExtra1);
+            defaultCase.AddCase(caseExtra2);
+
+            Console.WriteLine("---\t\tListagem de Casos Existentes\t\t---");
             Console.WriteLine();
+            defaultCase.ShowAllCases();
+            Console.WriteLine("_______________________________________________________________\n\n");
+
+            Console.WriteLine("---\t\tListagem de Pessoas Existentes\t\t---");
             Console.WriteLine();
-
-            Person personTeste = new Person("asdasd", "asdasdasd", Person.Genders.F, 33, 7);
-            defaultPerson.AddPerson(personTeste);
-
-            //Console.WriteLine("Ultimo ID Pessoa: " + defaultPerson.CurrentPersonID);
-
-            Case caseTeste = new Case(19, false);
-            defaultCase.AddCase(caseTeste);
+            defaultPerson.ShowPerson();
+            Console.WriteLine("_______________________________________________________________\n\n");
 
             defaultPerson.SavePersonsToFile();
             defaultCase.SaveCasesToFile();
+            defaultRegion.SaveRegionsToFile();
 
-            //Console.WriteLine("Ultimo ID Caso: " + defaultCase.CurrentCaseID);
-
+            Console.WriteLine("Prima qualquer tecla para sair.");
             Console.ReadKey();
         }
     }

@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Pandemic
 {
@@ -47,11 +48,12 @@ namespace Pandemic
 
         public Person(string firstName, string lastName, Genders gender, int age, int regionID)
         {
-            this.PersonID = GetNextPersonID();
-            this.FirstName = firstName;
-            this.LastName = lastName;
-            this.Gender = gender;
-            this.Age = age;
+            //this.PersonID = GetNextPersonID();
+            this.personID =  Interlocked.Increment(ref currentPersonID);
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.gender = gender;
+            this.age = age;
             this.RegionID = regionID;
         }
 
@@ -62,7 +64,7 @@ namespace Pandemic
 
         public int CurrentPersonID { get => currentPersonID; }
 
-        public int PersonID { get ; set ; }
+        public int PersonID { get => this.personID ; set => this.personID = value; }
 
         public string FirstName { get => firstName; set => firstName = value; }
 
@@ -145,8 +147,6 @@ namespace Pandemic
         {
             try
             {
-                //person.PersonID = GetNextPersonID();
-
                 PersonList.Add(person);
                 return true;
             }

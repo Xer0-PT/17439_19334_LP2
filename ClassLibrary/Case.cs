@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Pandemic
 {
@@ -35,15 +36,16 @@ namespace Pandemic
         #region Constructors
         public Case()
         {
-            this.CaseID = 0;
+            this.caseID = 0;
             this.infected = false;
         }
 
         public Case(int personId, bool infected)
         {
-            this.CaseID = GetNextCaseID();
+            //this.CaseID = GetNextCaseID();
+            this.caseID = Interlocked.Increment(ref currentCaseID);
             this.PersonID = personId;
-            this.Infected = infected;
+            this.infected = infected;
         }
         #endregion
 
@@ -52,9 +54,9 @@ namespace Pandemic
 
         public int CurrentCaseID { get => currentCaseID; }
 
-        public int CaseID { get; set; }
+        public int CaseID { get => this.caseID; set => this.caseID = value; }
 
-        public bool Infected { get => infected; set => infected = value; }
+        public bool Infected { get => this.infected; set => this.infected = value; }
 
         #endregion
 
@@ -79,8 +81,6 @@ namespace Pandemic
 
             Case aux = CaseList.Last();
             currentCaseID = aux.CaseID;
-
-            Console.WriteLine("currentCaseID: " + currentCaseID);
         }
 
         public bool SaveCasesToFile()
@@ -224,6 +224,16 @@ namespace Pandemic
             catch (Exception e)
             {
                 Console.WriteLine("Erro: " + e.Message);
+            }
+            return false;
+        }
+
+        public bool CheckIfPersonHasCase(int id)
+        {
+            foreach (var caso in CaseList)
+            {
+                if (caso.PersonID == id)
+                    return true;
             }
             return false;
         }
