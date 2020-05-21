@@ -11,9 +11,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Pandemic
 {
+    [Serializable]
     public class Case : Person
     {
         #region Member Variables
@@ -22,7 +25,9 @@ namespace Pandemic
         private int caseID;
         private bool infected;
 
-        static List<Case> CaseList;
+        static List<Case> CaseList = new List<Case>();
+
+        private const string FILEPATH = @".\Case.csv";
 
         #endregion
 
@@ -30,7 +35,8 @@ namespace Pandemic
         #region Constructors
         public Case()
         {
-            CaseList = new List<Case>();
+            this.CaseID = 0;
+            this.infected = false;
         }
 
         public Case(int personId, bool infected)
@@ -44,22 +50,37 @@ namespace Pandemic
 
         #region Properties
 
-        public int CaseID
-        {
-            get
-            {
-                return this.caseID;
-            }
-            set
-            {
-                this.caseID = value;
-            }
-        }
+        public int CurrentCaseID { get => currentCaseID; }
+
+        public int CaseID { get; set; }
+
+        public bool Infected { get => infected; set => infected = value; }
 
         #endregion
 
 
         #region Functions
+        public void LoadCasesFromFile()
+        {
+            List<string> lines = File.ReadAllLines(FILEPATH).ToList();
+
+            foreach (var line in lines)
+            {
+                string[] entrie = line.Split(';');
+
+                Case newCase = new Case();
+
+                newCase.CaseID = Convert.ToInt32(entrie[0]);
+                newCase.PersonID = Convert.ToInt32(entrie[1]);
+                newCase.Infected = (bool)Boolean.TryParse(entrie[2], out infected);
+
+                CaseList.Add(newCase);
+            }
+
+            Case aux = CaseList.Last();
+            currentCaseID = aux.CaseID;
+        }
+
 
         /// <summary>
         /// Função simplesmente para imprimir a informação do array enquanto houver dados
@@ -68,7 +89,7 @@ namespace Pandemic
         {
             foreach (var obj in CaseList)
             {
-                Console.WriteLine("Cdigo: {0}\tID Pessoa: {1}", obj.CaseID, obj.PersonID);
+                Console.WriteLine("Cdigo: {0}\tID Pessoa: {1}\tInfectado: {2}", obj.CaseID, obj.PersonID, obj.Infected);
             }
         }
         /// <summary>
@@ -109,7 +130,7 @@ namespace Pandemic
         /// </summary>
         /// <param name="gender"></param>
         /// <returns></returns>
-        public int CountByGender(Genders gender)
+/*        public int CountByGender(Genders gender)
         {
             int count = 0;
 
@@ -118,6 +139,22 @@ namespace Pandemic
             foreach (var obj in personList)
             {
                 if (obj.Gender == gender)
+                    count++;
+            }
+            return count;
+        }*/
+
+        public int CountByGender(string gender)
+        {
+            int count = 0;
+
+            Genders auxGender = (Genders)Enum.Parse(typeof(Genders), gender);
+
+            List<Person> personList = GetPersonList();
+
+            foreach (var obj in personList)
+            {
+                if (obj.Gender == auxGender)
                     count++;
             }
             return count;

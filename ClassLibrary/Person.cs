@@ -124,7 +124,6 @@ namespace Pandemic
             currentPersonID = aux.PersonID;
         }
 
-
         public bool ValidatePersonID(int id)
         {
             foreach (var item in PersonList)

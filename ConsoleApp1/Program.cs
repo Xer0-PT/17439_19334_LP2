@@ -25,13 +25,18 @@ namespace TP1
             
             bool aux;
 
+            string gender;
+
             Regions defaultRegion = new Regions();
 
-            Case caseList = new Case();
+            Case defaultCase = new Case();
 
             Person defaultPerson = new Person();
 
             defaultRegion.LoadRegionsFromFile();
+            defaultCase.LoadCasesFromFile();
+
+            defaultCase.ShowAllCases();
 
             Console.WriteLine("Listagem de Pessoas");
             Console.WriteLine();
@@ -67,15 +72,15 @@ namespace TP1
                                 {
                                     Case case1 = new Case(id, true);
 
-                                    caseList.AddCase(case1);
+                                    defaultCase.AddCase(case1);
 
                                     aux = true;
                                 }
-                                else if (answer == 2)
+                                else if (answer == 0)
                                 {
                                     Case case1 = new Case(id, false);
 
-                                    caseList.AddCase(case1);
+                                    defaultCase.AddCase(case1);
 
                                     aux = true;
                                 }
@@ -310,16 +315,16 @@ namespace TP1
             Console.WriteLine();
 
             //Mostrar Casos
-            caseList.ShowAllCases();
+            defaultCase.ShowAllCases();
             Console.WriteLine();
 
 
             //Mostrar Total de Casos
-            caseCount = caseList.CountTotalCases();
+            caseCount = defaultCase.CountTotalCases();
             Console.WriteLine("Total de casos: {0}", caseCount);
 
             //Mostrar Total de Casos defaultCase
-            caseCount = caseList.CountInfected();
+            caseCount = defaultCase.CountInfected();
             Console.WriteLine("Total de casos positivos: {0}", caseCount);
 
             Console.WriteLine();
@@ -341,7 +346,7 @@ namespace TP1
                 }
             } while (aux != true);
 
-            caseCount = caseList.CountByAge(age);
+            caseCount = defaultCase.CountByAge(age);
 
             if (caseCount > 0)
             {
@@ -351,27 +356,35 @@ namespace TP1
             {
                 Console.WriteLine("Não há casos com idade igual a {0}", age);
             }
-            
-            //Mostrar casos por género
-            caseCount = caseList.CountByGender(Person.Genders.F);
-            if (caseCount > 0)
-            {
-                Console.WriteLine("Numero de casos com o género Feminino: {0}", caseCount);
-            }
-            else
-            {
-                Console.WriteLine("Não há casos com o género {0}", Person.Genders.M);
-            }
 
-            caseCount = caseList.CountByGender(Person.Genders.M);
-            if (caseCount > 0)
+            //Mostrar casos por género inserido pelo utilizador
+            do
             {
-                Console.WriteLine("Numero de casos com o género Masculino: {0}", caseCount);
-            }
-            else
-            {
-                Console.WriteLine("Não há casos com o género {0}", Person.Genders.M);
-            }
+                try
+                {
+                    Console.WriteLine("Insira o género a procurar. [F] ou [M]");
+                    gender = Console.ReadLine();
+
+                    if ((gender != "M") || (gender != "F"))
+                    {
+                        aux = false;
+                        Console.WriteLine("Género Inválido!");
+                    }
+                    else
+                    {
+                        aux = true;
+
+                        caseCount = defaultCase.CountByGender(gender);
+
+                        Console.WriteLine("Número de casos com o género inserido: " + caseCount);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Erro: " + e.Message);
+                }
+            } while (aux != true);
+
 
             defaultPerson.SavePersonsToFile();
             
