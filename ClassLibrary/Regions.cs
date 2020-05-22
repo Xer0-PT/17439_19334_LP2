@@ -16,11 +16,8 @@ using System.Linq;
 using System.Threading;
 using System.Runtime.Serialization.Formatters.Binary;
 
-[assembly: CLSCompliant(true)]
-
 namespace Pandemic
 {
-    [CLSCompliant(true)]
     [Serializable]
     public class Regions
     {
@@ -30,10 +27,10 @@ namespace Pandemic
         private int regionID;
         private string region;
 
-        private const string FILEPATH = @".\Regions.csv";
-        private const string BINARYFILEPATH = @".\Regions.dat";
+        private const string CSVFILEPATH = @"..\..\Regions.csv";
+        private const string BINARYFILEPATH = @"..\..\Regions.dat";
 
-        static List<Regions> regionsList = new List<Regions>();
+        private static List<Regions> regionsList = new List<Regions>();
 
         #endregion
 
@@ -46,7 +43,6 @@ namespace Pandemic
 
         public Regions(string region)
         {
-            //this.RegionID = GetNextRegionID();
             this.regionID = Interlocked.Increment(ref currentRegionID);
             this.Region = region;
         }
@@ -61,17 +57,25 @@ namespace Pandemic
 
         public string Region { get => region; set => region = value; }
 
+        public List<Regions> RegionList { get => regionsList; }
+
         #endregion
 
         #region Functions
 
-        public void LoadRegionsFromBinaryFile()
+        /// <summary>
+        /// Função para ler o ficheiro binário de Regiões e guardar na Lista de Regiões
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
+        public bool LoadRegionsFromBinaryFile()
         {
-            FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Open, FileAccess.Read);
-            BinaryFormatter bin = new BinaryFormatter();
-
             try
             {
+                FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Open, FileAccess.Read);
+                BinaryFormatter bin = new BinaryFormatter();
+
                 if (File.Exists(BINARYFILEPATH))
                 {
                     regionsList = (List<Regions>)bin.Deserialize(fs);
@@ -81,18 +85,28 @@ namespace Pandemic
                     fs = File.Create(BINARYFILEPATH);
                     bin.Serialize(fs, regionsList);
                 }
+
+                fs.Close();
+
+                Regions aux = regionsList.Last();
+                currentRegionID = aux.regionID;
+
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine("Erro: " + e.Message);
             }
-
-            fs.Close();
-
-            Regions aux = regionsList.Last();
-            currentRegionID = aux.regionID;
+            
+            return false;
         }
 
+        /// <summary>
+        /// Função para guardar a Lista de Regiões em Ficheiro Binário
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
         public bool SaveRegionsToBinaryFile()
         {
             try
@@ -112,26 +126,48 @@ namespace Pandemic
             return false;
         }
 
-        public void LoadRegionsFromCSVFile()
+        /// <summary>
+        /// Função para ler o ficheiro CSV de Regiões e guardá-los em Lista
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
+        public bool LoadRegionsFromCSVFile()
         {
-            List<string> lines = File.ReadAllLines(FILEPATH).ToList();
-
-            foreach (var line in lines)
+            try
             {
-                string[] entrie = line.Split(';');
+                List<string> lines = File.ReadAllLines(CSVFILEPATH).ToList();
 
-                Regions newRegion = new Regions();
+                foreach (var line in lines)
+                {
+                    string[] entrie = line.Split(';');
 
-                newRegion.RegionID = Convert.ToInt32(entrie[0]);
-                newRegion.region = entrie[1];
+                    Regions newRegion = new Regions();
 
-                regionsList.Add(newRegion);
+                    newRegion.RegionID = Convert.ToInt32(entrie[0]);
+                    newRegion.region = entrie[1];
+
+                    regionsList.Add(newRegion);
+                }
+
+                Regions aux = regionsList.Last();
+                currentRegionID = aux.regionID;
+
+                return true;
             }
-
-            Regions aux = regionsList.Last();
-            currentRegionID = aux.regionID;
+            catch (Exception e)
+            {
+                Console.WriteLine("Erro: " + e.Message);
+            }
+            return false;
         }
 
+        /// <summary>
+        /// Função para guardar a lista de Regiões em ficheiro CSV
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
         public bool SaveRegionsToCSVFile()
         {
             try
@@ -143,7 +179,7 @@ namespace Pandemic
                     output.Add(obj.RegionID + ";" + obj.Region);
                 }
 
-                File.WriteAllLines(FILEPATH, output);
+                File.WriteAllLines(CSVFILEPATH, output);
 
                 return true;
             }
@@ -173,15 +209,6 @@ namespace Pandemic
             }
             return false;
         }
-
-        /// <summary>
-        /// Retorna o próximo ID de Região válido
-        /// </summary>
-        /// <returns></returns>
-/*        protected private int GetNextRegionID()
-        {
-            return ++currentRegionID;
-        }*/
 
         /// <summary>
         /// Função para imprimir todas as regiões

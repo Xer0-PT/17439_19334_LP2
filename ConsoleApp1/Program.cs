@@ -12,8 +12,6 @@
 using System;
 using Pandemic;
 
-[assembly: CLSCompliant(true)]
-
 namespace TP1
 {
     class Program
@@ -22,10 +20,13 @@ namespace TP1
         {
             int caseCount;
             int age = 0;
-            int id;
+            int personId;
             int answer;
-            
+
+            bool loadFiles = true;
+            bool saveFiles = true;
             bool aux;
+            bool addCase;
 
             string gender;
 
@@ -33,15 +34,34 @@ namespace TP1
             Case defaultCase = new Case();
             Person defaultPerson = new Person();
 
-            defaultRegion.LoadRegionsFromCSVFile();
-            defaultCase.LoadCasesFromCSVFile();
-            //defaultPerson.LoadPersonsFromCSVFile();
+            /*
+             * Ler os ficheiros CSV de cada classe 
+             * Se houver alguma falha a variável loadFiles toma o valor falso
+             */
+            /*if (defaultRegion.LoadRegionsFromCSVFile() != true)     loadFiles = false;
+            if (defaultCase.LoadCasesFromCSVFile() != true)         loadFiles = false;
+            if (defaultPerson.LoadPersonsFromCSVFile() != true)     loadFiles = false;*/
 
-            //Load Person from BINARY
-            defaultPerson.LoadPersonsFromBinaryFile();
 
-            //Save Person to BINARY
-            //defaultPerson.SavePersonsToBinaryFile();
+            /*
+             * Ler os ficheiros Binários de cada classe 
+             * Se houver alguma falha a variável loadFiles toma o valor falso
+             */
+            if (defaultPerson.LoadPersonsFromBinaryFile() != true)      loadFiles = false;
+            if (defaultCase.LoadCasesFromBinaryFile() != true)          loadFiles = false;
+            if (defaultRegion.LoadRegionsFromBinaryFile() != true)      loadFiles = false;
+
+
+            /*
+             * Se a variável loadFiles tiver como valor falso
+             * Fechamos a aplicação
+             */
+            if (loadFiles != true)
+            {
+                Console.WriteLine("Programa vai encerrar. Prima qualquer tecla para continuar.");
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
 
             Console.WriteLine("---\t\tListagem de Regiões Existentes\t\t---");
             Console.WriteLine();
@@ -58,48 +78,132 @@ namespace TP1
             defaultPerson.ShowPerson();
             Console.WriteLine("_______________________________________________________________\n\n");
 
+
+            /*
+             * Como não há a utilização de menus
+             * Forçamos a inserção de um novo caso
+             */
             do
             {
                 Console.WriteLine();
-                Console.WriteLine("---\t\tInserir Caso\t\t---");
+                Console.WriteLine("---\t\tInserir Caso Suspeito\t\t---");
                 try
                 {
+                    /* 
+                     * Pedimos o id da Pessoa
+                     */
                     Console.Write("Qual o ID da pessoa com suspeitas de virus: ");
+                    personId = Convert.ToInt32(Console.ReadLine());
 
-                    id = Convert.ToInt32(Console.ReadLine());
-
-                    if (defaultPerson.ValidatePersonID(id) == false)
+                    /*
+                     * Verificamos se essa pessoa existe com a função CheckIfPersonExists
+                     */
+                    if (defaultPerson.CheckIfPersonExists(personId) == false)
                     {
                         Console.WriteLine("ID de pessoa não existe!");
                         aux = false;
                     }
-                    else if (defaultCase.CheckIfPersonHasCase(id) == true)
+                    /*
+                     * Verificamos se essa pessoa já está registada num caso
+                     * Se já estiver a variável defaultCase recebe esse caso.
+                     * A variável defaultPerson recebe a pessoa com o id inserido
+                     * e perguntamos se quer alterar o estado de Infectado.
+                     */
+                    else if (defaultCase.CheckIfPersonHasCase(personId) == true)
                     {
-                        Console.WriteLine("Esta pessoa já está registada num caso!.");
-                        aux = false;
+                        defaultPerson = defaultPerson.ReturnPerson(personId);
+                        defaultCase = defaultCase.ReturnCase(personId);
+
+                        Console.WriteLine("A pessoa {0} {1} já está registada num caso com Infectado = {2}.", defaultPerson.FirstName, defaultPerson.LastName, defaultCase.Infected);
+                        do
+                        {
+                            try
+                            {
+                                Console.WriteLine("Quer alterar o estado de Infectado? [1 - Sim] ou [0 - Não]");
+                                answer = Convert.ToInt32(Console.ReadLine());
+                                
+                                if (answer == 1)
+                                {
+                                    do
+                                    {
+                                        try
+                                        {
+                                            Console.WriteLine("[1] Se infectado");
+                                            Console.WriteLine("[0] Se não infectado");
+                                            answer = Convert.ToInt32(Console.ReadLine());
+
+                                            if (answer == 1)
+                                            {
+                                                defaultCase.UpdateCase(personId, true);
+                                                aux = true;
+                                            }
+                                            else if (answer == 0)
+                                            {
+                                                defaultCase.UpdateCase(personId, false);
+                                                aux = true;
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Opção Inválida!");
+                                                aux = false;
+                                            }
+                                        }
+                                        catch (FormatException e)
+                                        {
+                                            aux = false;
+                                            Console.WriteLine("Erro: " + e.Message);
+                                        }
+                                    } while (aux != true);
+                                }
+                                aux = true;
+                            }
+                            catch (FormatException e)
+                            {
+                                aux = false;
+                                Console.WriteLine("Erro: " + e.Message);
+                            }
+                        } while (aux != true);
                     }
+                    /*
+                     * Se a pessoa não estiver registada num caso, é porque se trata de um caso suspeito novo,
+                     * então perguntamos se esta pessoa deu teste positivo ou não.
+                     */
                     else
                     {
                         do
                         {
                             try
                             {
-                                Console.WriteLine("Esta pessoa está infectada? [1 - Sim] ou [0 - Não]");
+                                Console.WriteLine("O teste desta pessoa deu positivo? [1 - Sim] ou [0 - Não]");
                                 answer = Convert.ToInt32(Console.ReadLine());
 
                                 if (answer == 1)
                                 {
-                                    Case case1 = new Case(id, true);
+                                    Case case1 = new Case(personId, true);
 
-                                    defaultCase.AddCase(case1);
+                                    addCase = defaultCase.AddCase(case1);
+
+                                    if (addCase == false)
+                                    {
+                                        Console.WriteLine("Ocorreu um erro. Programa vai encerrar. Prima qualquer tecla para continuar.");
+                                        Console.ReadKey();
+                                        Environment.Exit(1);
+                                    }
 
                                     aux = true;
                                 }
                                 else if (answer == 0)
                                 {
-                                    Case case1 = new Case(id, false);
+                                    Case case1 = new Case(personId, false);
 
-                                    defaultCase.AddCase(case1);
+                                    addCase = defaultCase.AddCase(case1);
+
+                                    if (addCase == false)
+                                    {
+                                        Console.WriteLine("Ocorreu um erro. Programa vai encerrar. Prima qualquer tecla para continuar.");
+                                        Console.ReadKey();
+                                        Environment.Exit(1);
+                                    }
 
                                     aux = true;
                                 }
@@ -126,10 +230,9 @@ namespace TP1
 
 
             //Mostrar Total de Casos
-            caseCount = defaultCase.CountTotalCases();
-            Console.WriteLine("---\t\tTotal de casos: {0}\t\t---", caseCount);
+            Console.WriteLine("---\t\tTotal de casos: {0}\t\t---", defaultCase.CaseList.Count);
 
-            //Mostrar Total de Casos defaultCase
+            //Mostrar Total de Casos 
             caseCount = defaultCase.CountInfected();
             Console.WriteLine("---\t\tTotal de casos positivos: {0}\t\t---", caseCount);
 
@@ -221,12 +324,23 @@ namespace TP1
             defaultPerson.ShowPerson();
             Console.WriteLine("_______________________________________________________________\n\n");
 
-            //defaultPerson.SavePersonsToCSVFile();
-            defaultCase.SaveCasesToCSVFile();
-            defaultRegion.SaveRegionsToCSVFile();
+            //Save Lists to CSV File
+            /*if (defaultPerson.SavePersonsToCSVFile() != true)       saveFiles = false;
+            if (defaultCase.SaveCasesToCSVFile() != true)           saveFiles = false;
+            if (defaultRegion.SaveRegionsToCSVFile() != true)       saveFiles = false;*/
 
-            //Save Person to BINARY
-            defaultPerson.SavePersonsToBinaryFile();
+            //Save Lists to BINARY File
+            if (defaultPerson.SavePersonsToBinaryFile() != true)        saveFiles = false;
+            if (defaultCase.SaveCasesToBinaryFile() != true)            saveFiles = false;
+            if (defaultRegion.SaveRegionsToBinaryFile() != true)        saveFiles = false;
+
+            if (saveFiles != true)
+            {
+                Console.WriteLine("Programa vai encerrar. Prima qualquer tecla para continuar.");
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
+
 
             Console.WriteLine("Prima qualquer tecla para sair.");
             Console.ReadKey();

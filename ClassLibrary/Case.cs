@@ -18,7 +18,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Pandemic
 {
-    [CLSCompliant(true)]
     [Serializable]
     public class Case : Person
     {
@@ -27,10 +26,10 @@ namespace Pandemic
         private int caseID;
         private bool infected;
 
-        static List<Case> caseList = new List<Case>();
+        private List<Case> caseList;
 
-        private const string FILEPATH = @".\Case.csv";
-        private const string BINARYFILEPATH = @".\Case.csv";
+        private const string CSVFILEPATH = @"..\..\Case.csv";
+        private const string BINARYFILEPATH = @"..\..\Case.dat";
 
         #endregion
 
@@ -38,13 +37,13 @@ namespace Pandemic
         #region Constructors
         public Case()
         {
+            this.caseList = new List<Case>();
             this.caseID = 0;
             this.infected = false;
         }
 
         public Case(int personId, bool infected)
         {
-            //this.CaseID = GetNextCaseID();
             this.caseID = Interlocked.Increment(ref currentCaseID);
             this.PersonID = personId;
             this.infected = infected;
@@ -59,10 +58,19 @@ namespace Pandemic
 
         public bool Infected { get => this.infected; set => this.infected = value; }
 
+        public List<Case> CaseList { get => caseList; }
+
         #endregion
 
         #region Functions
-        public void LoadCasesFromBinaryFile()
+
+        /// <summary>
+        /// Função para ler o ficheiro binário de Casos e guardar na Lista de Casos
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
+        public bool LoadCasesFromBinaryFile()
         {
             FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Open, FileAccess.Read);
             BinaryFormatter bin = new BinaryFormatter();
@@ -78,18 +86,27 @@ namespace Pandemic
                     fs = File.Create(BINARYFILEPATH);
                     bin.Serialize(fs, caseList);
                 }
+
+                fs.Close();
+
+                Case aux = caseList.Last();
+                currentCaseID = aux.CaseID;
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine("Erro: " + e.Message);
             }
-
-            fs.Close();
-
-            Case aux = caseList.Last();
-            currentCaseID = aux.CaseID;
+            return false;
         }
 
+
+        /// <summary>
+        /// Função para guardar a Lista de Casos em Ficheiro Binário
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
         public bool SaveCasesToBinaryFile()
         {
             try
@@ -108,39 +125,62 @@ namespace Pandemic
             return false;
         }
 
-        public void LoadCasesFromCSVFile()
+
+        /// <summary>
+        /// Função para ler o ficheiro CSV de Casos e guardá-los em Lista
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
+        public bool LoadCasesFromCSVFile()
         {
-            List<string> lines = File.ReadAllLines(FILEPATH).ToList();
+            List<string> lines = File.ReadAllLines(CSVFILEPATH).ToList();
 
-            foreach (var line in lines)
+            try
             {
-                string[] entrie = line.Split(';');
+                foreach (var line in lines)
+                {
+                    string[] entrie = line.Split(';');
 
-                Case newCase = new Case();
+                    Case newCase = new Case();
 
-                newCase.CaseID = Convert.ToInt32(entrie[0]);
-                newCase.PersonID = Convert.ToInt32(entrie[1]);
-                newCase.Infected = bool.Parse(entrie[2]);
+                    newCase.CaseID = Convert.ToInt32(entrie[0]);
+                    newCase.PersonID = Convert.ToInt32(entrie[1]);
+                    newCase.Infected = bool.Parse(entrie[2]);
 
-                caseList.Add(newCase);
+                    caseList.Add(newCase);
+                }
+
+                Case aux = caseList.Last();
+                currentCaseID = aux.CaseID;
+
+                return true;
             }
-
-            Case aux = caseList.Last();
-            currentCaseID = aux.CaseID;
+            catch (Exception e)
+            {
+                Console.WriteLine("Erro: " + e.Message);
+            }
+            return false;
         }
 
+        /// <summary>
+        /// Função para guardar a lista de Casos em ficheiro CSV
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
         public bool SaveCasesToCSVFile()
         {
             try
             {
                 List<string> output = new List<string>();
 
-                foreach (var obj in caseList)
+                foreach (var caso in caseList)
                 {
-                    output.Add(obj.CaseID + ";" + obj.PersonID + ";" + obj.Infected);
+                    output.Add(caso.CaseID + ";" + caso.PersonID + ";" + caso.Infected);
                 }
 
-                File.WriteAllLines(FILEPATH, output);
+                File.WriteAllLines(CSVFILEPATH, output);
 
                 return true;
             }
@@ -153,33 +193,25 @@ namespace Pandemic
 
 
         /// <summary>
-        /// Função simplesmente para imprimir a informação do array enquanto houver dados
+        /// Função para imprimir todos os Casos
         /// </summary>
         public void ShowAllCases()
         {
-            foreach (var obj in caseList)
+            foreach (var caso in caseList)
             {
-                Console.WriteLine("Cdigo: {0}\tID Pessoa: {1}\tInfectado: {2}", obj.CaseID, obj.PersonID, obj.Infected);
+                Console.WriteLine("Cdigo: {0}\tID Pessoa: {1}\tInfectado: {2}", caso.CaseID, caso.PersonID, caso.Infected);
             }
-        }
-        /// <summary>
-        /// Retorna o número de Casos existentes
-        /// </summary>
-        /// <returns></returns>
-        public int CountTotalCases()
-        {
-            return caseList.Count;
         }
 
         /// <summary>
         /// Percorre cada Caso e compara o ID de Pessoa com cada ID na lista de Pessoas.
+        /// Assim vai apenas contabilizar as Pessoas que representam um caso.
         /// Se o ID de Pessoa existir na lista de Casos, verifica se a idade da Pessoa
         /// é igual à idade inserida pelo utilizador, se for igual incrementa o contador.
         /// Dando assim a contagem de Pessoas, com idade igual à inserida pelo utilizador,
         /// que realmente representa um Caso.
         /// </summary>
         /// <param name="age"></param>
-        /// <returns></returns>
         public int CountByAge(int age)
         {
             int count = 0;
@@ -207,13 +239,13 @@ namespace Pandemic
 
         /// <summary>
         /// Percorre cada Caso e compara o ID de Pessoa com cada ID na lista de Pessoas.
+        /// Assim vai apenas contabilizar as Pessoas que representam um caso.
         /// Se o ID de Pessoa existir na lista de Casos, verifica se o género da Pessoa
         /// é igual ao género inserido pelo utilizador, se for igual incrementa o contador.
         /// Dando assim a contagem de Pessoas, com género igual ao inserido pelo utilizador,
         /// que realmente representa um Caso.
         /// </summary>
         /// <param name="gender"></param>
-        /// <returns></returns>
         public int CountByGender(string gender)
         {
             int count = 0;
@@ -242,14 +274,13 @@ namespace Pandemic
         /// Percorre cada Caso, se se tratar de um infectado incrementa o contador.
         /// Devolvendo o número de infectados.
         /// </summary>
-        /// <returns></returns>
         public int CountInfected()
         {
             int count = 0;
 
-            foreach (var item in caseList)
+            foreach (var caso in caseList)
             {
-                if (item.infected == true)
+                if (caso.infected == true)
                     count++;
             }
             return count;
@@ -257,23 +288,48 @@ namespace Pandemic
 
         /// <summary>
         /// Função que adiciona o novo Caso à lista de Casos
+        /// Se por acaso já existir o ID retorna falso
+        /// Se não houver problema adiciona o caso e retorna verdadeiro
         /// </summary>
         /// <param name="newCase"></param>
-        /// <returns></returns>
         public bool AddCase(Case newCase)
         {
-            try
+            foreach (var caso in caseList)
             {
-                caseList.Add(newCase);
-                return true;
+                if (newCase.caseID == caso.CaseID)
+                {
+                    return false;
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine("Erro: " + e.Message);
-            }
-            return false;
+            caseList.Add(newCase);
+            return true;
         }
 
+        /// <summary>
+        /// Função com método alternativo ao foreach
+        /// que recebe por parâmetro o id de Pessoa
+        /// Se existir um caso com essa Pessoa retorna o caso
+        /// Senão retorna nulo
+        /// </summary>
+        /// <param name="personId"></param>
+        public Case ReturnCase(int personId)
+        {
+            var caso = caseList.Find(x => x.PersonID == personId);
+
+            if (caso != null)
+                return caso;
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// Função para verificar se a pessoa inserida pelo utilizador
+        /// já está registada em algum caso.
+        /// Retorna verdadeiro se sim
+        /// Retorna falso se não
+        /// </summary>
+        /// <param name="id"></param>
         public bool CheckIfPersonHasCase(int id)
         {
             foreach (var caso in caseList)
@@ -285,22 +341,21 @@ namespace Pandemic
         }
 
         /// <summary>
-        /// Retorna o próximo ID de Caso válido
+        /// Função que recebe por parâmetro o id de Pessoa e o novo estado de Infectado
+        /// faz o update da variável infectado para o recebido por parâmetro
         /// </summary>
-        /// <returns></returns>
-/*        protected private int GetNextCaseID()
+        /// <param name="id"></param>
+        /// <param name="update"></param>
+        public void UpdateCase(int id, bool update)
         {
-            return ++currentCaseID;
-        }*/
-
-        /// <summary>
-        /// Função para retornar a lista de Casos, caso seja necessário noutra classe
-        /// </summary>
-        /// <returns></returns>
-/*        public static List<Case> GetCaseList()
-        {
-            return caseList;
-        }*/
+            foreach (var caso in caseList)
+            {
+                if (caso.PersonID == id)
+                {
+                    caso.Infected = update;
+                }
+            }
+        }
         #endregion
     }
 }

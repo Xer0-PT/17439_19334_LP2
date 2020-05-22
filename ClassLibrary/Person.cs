@@ -18,7 +18,6 @@ using System.Threading;
 
 namespace Pandemic
 {
-    [CLSCompliant(true)]
     [Serializable]
     public class Person : Regions
     {
@@ -31,10 +30,10 @@ namespace Pandemic
         private Genders gender;
         private int age;
 
-        private const string CSVFILEPATH = @".\Person.csv";
-        private const string BINARYFILEPATH = @".\Person.dat";
+        private const string CSVFILEPATH = @"..\..\Person.csv";
+        private const string BINARYFILEPATH = @"..\..\Person.dat";
 
-        static List<Person> personList = new List<Person>();
+        private static List<Person> personList = new List<Person>();
 
         #endregion
 
@@ -51,7 +50,6 @@ namespace Pandemic
 
         public Person(string firstName, string lastName, Genders gender, int age, int regionID)
         {
-            //this.PersonID = GetNextPersonID();
             this.personID =  Interlocked.Increment(ref currentPersonID);
             this.firstName = firstName;
             this.lastName = lastName;
@@ -77,11 +75,19 @@ namespace Pandemic
 
         public int Age { get => age; set => age = value; }
 
+        public List<Person> PersonList { get => personList; }
+
         #endregion
 
 
         #region Functions
 
+        /// <summary>
+        /// Função para guardar a Lista de Pessoas em Ficheiro Binário
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
         public bool SavePersonsToBinaryFile()
         {
             try
@@ -101,13 +107,19 @@ namespace Pandemic
             return false;
         }
 
-        public void LoadPersonsFromBinaryFile()
+        /// <summary>
+        /// Função para ler o ficheiro binário de Pessoas e guardar na Lista de Pessoas
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
+        public bool LoadPersonsFromBinaryFile()
         {
-            FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Open, FileAccess.Read);
-            BinaryFormatter bin = new BinaryFormatter();
-
             try
             {
+                FileStream fs = new FileStream(BINARYFILEPATH, FileMode.Open, FileAccess.Read);
+                BinaryFormatter bin = new BinaryFormatter();
+
                 if (File.Exists(BINARYFILEPATH))
                 {
                     personList = (List<Person>)bin.Deserialize(fs);
@@ -117,18 +129,26 @@ namespace Pandemic
                     fs = File.Create(BINARYFILEPATH);
                     bin.Serialize(fs, personList);
                 }
+                fs.Close();
+
+                Person aux = personList.Last();
+                currentPersonID = aux.personID;
+                
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine("Erro: " + e.Message);
             }
-
-            fs.Close();
-
-            Person aux = personList.Last();
-            currentPersonID = aux.personID;
+            return false;
         }
 
+        /// <summary>
+        /// Função para guardar a lista de Pessoas em ficheiro CSV
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
+        /// </summary>
         public bool SavePersonsToCSVFile()
         {
             try
@@ -151,53 +171,37 @@ namespace Pandemic
             return false;
         }
 
-        public void LoadPersonsFromCSVFile()
-        {
-            List<string> lines = File.ReadAllLines(CSVFILEPATH).ToList();
-
-            foreach (var line in lines)
-            {
-                string[] entrie = line.Split(';');
-
-                Person newPerson = new Person();
-
-                newPerson.PersonID = Convert.ToInt32(entrie[0]);
-                newPerson.FirstName = entrie[1];
-                newPerson.LastName = entrie[2];
-                newPerson.Gender = (Genders)Enum.Parse(typeof(Genders), entrie[3]);
-                newPerson.Age = Convert.ToInt32(entrie[4]);
-                newPerson.RegionID = Convert.ToInt32(entrie[5]);
-
-                personList.Add(newPerson);
-            }
-
-            Person aux = personList.Last();
-            currentPersonID = aux.PersonID;
-        }
-
-        public bool ValidatePersonID(int id)
-        {
-            foreach (var item in personList)
-            {
-                if (item.PersonID == id)
-                    return true;
-            }
-            return false;
-        }
-
-
         /// <summary>
-        /// Função que percorre o array à procura de um espaço livre
-        /// Retorna true se houver espaço livre e guarda lá os dados
-        /// Retorna false se não houver espaço livre
+        /// Função para ler o ficheiro CSV de Pessoas e guardá-los em Lista
+        /// 
+        /// Retorna verdadeiro se não houve problema
+        /// Retorna falso se houve algum problema
         /// </summary>
-        /// <param name="person"></param>
-        /// <returns></returns>
-        public bool AddPerson(Person person)
+        public bool LoadPersonsFromCSVFile()
         {
             try
             {
-                personList.Add(person);
+                List<string> lines = File.ReadAllLines(CSVFILEPATH).ToList();
+
+                foreach (var line in lines)
+                {
+                    string[] entrie = line.Split(';');
+
+                    Person newPerson = new Person();
+
+                    newPerson.PersonID = Convert.ToInt32(entrie[0]);
+                    newPerson.FirstName = entrie[1];
+                    newPerson.LastName = entrie[2];
+                    newPerson.Gender = (Genders)Enum.Parse(typeof(Genders), entrie[3]);
+                    newPerson.Age = Convert.ToInt32(entrie[4]);
+                    newPerson.RegionID = Convert.ToInt32(entrie[5]);
+
+                    personList.Add(newPerson);
+                }
+
+                Person aux = personList.Last();
+                currentPersonID = aux.PersonID;
+                
                 return true;
             }
             catch (Exception e)
@@ -206,26 +210,74 @@ namespace Pandemic
             }
             return false;
         }
-        /// <summary>
-        /// Retorna o próximo id de Pessoa válido
-        /// </summary>
-        /// <returns></returns>
-        /*protected int GetNextPersonID()
-        {
-            return ++currentPersonID;
-        }*/
 
         /// <summary>
-        /// Função para retornar o array de Pessoas, caso seja necessário em outra classe
+        /// Função com método alternativo ao foreach
+        /// que recebe por parâmetro o id de Pessoa
+        /// Se essa pessoa existir retorna a Pessoa
+        /// Senão retorna nulo
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
+        public Person ReturnPerson(int id)
+        {
+            var person = personList.Find(x => x.PersonID == id);
+            
+            if (person != null)
+                return person;
+            
+            return null;
+        }
+
+        /// <summary>
+        /// Função que recebe por parâmetro o id de pessoa inserido pelo utilizador
+        /// se verifica se essa pessoa existe.
+        /// Se existir retorna verdadeiro.
+        /// Se não existir retorna falso.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool CheckIfPersonExists(int id)
+        {
+            foreach (var person in personList)
+            {
+                if (person.PersonID == id)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Função que adiciona nova Pessoa à lista de Pessoas
+        /// Se por acaso já existir o ID retorna falso
+        /// Se não houver problema adiciona a pessoa e retorna verdadeiro
+        /// </summary>
+        /// <param name="person"></param>
+        /// <returns></returns>
+        public bool AddPerson(Person newPerson)
+        {
+            foreach (var person in personList)
+            {
+                if (newPerson.personID == person.PersonID)
+                {
+                    return false;
+                }
+            }
+            personList.Add(newPerson);
+            return true;
+        }
+
+        /// <summary>
+        /// Função para retornar a lista de Pessoas
+        /// Está a ser usada na função CountByAge e CountByGender da Classe Case
+        /// </summary>
         public static List<Person> GetPersonList()
         {
             return personList;
         }
 
         /// <summary>
-        /// Função simplesmente para imprimir a informação do array enquanto houver dados
+        /// Função para imprimir todas as Pessoas
         /// </summary>
         public void ShowPerson()
         {
