@@ -30,7 +30,7 @@ namespace TP1
 
             string gender;
 
-            Regions defaultRegion = new Regions();
+            Region defaultRegion = new Region();
             Case defaultCase = new Case();
             Person defaultPerson = new Person();
 
@@ -46,6 +46,8 @@ namespace TP1
             /*
              * Ler os ficheiros Binários de cada classe 
              * Se houver alguma falha a variável loadFiles toma o valor falso
+             * 
+             * Aqui deviamos utilizar as exceções!!!
              */
             if (defaultPerson.LoadPersonsFromBinaryFile() != true)      loadFiles = false;
             if (defaultCase.LoadCasesFromBinaryFile() != true)          loadFiles = false;
@@ -304,9 +306,12 @@ namespace TP1
             Console.WriteLine("Prima qualquer tecla para continuar.");
             Console.ReadKey();
 
-            Person personExtra1 = new Person("Extra_1", "Extra_1", Person.Genders.F, 33, 7);
-            Person personExtra2 = new Person("Extra_2", "Extra_2", Person.Genders.M, 38, 4);
+            Person personExtra1 = new Person("Helder", "Cunha", Person.Genders.M, 33, 7);
             defaultPerson.AddPerson(personExtra1);
+
+
+            Person personExtra2 = new Person("Extra_2", "Extra_2", Person.Genders.M, 38, 4);
+            
             defaultPerson.AddPerson(personExtra2);
 
             Case caseExtra1 = new Case(-1, false);

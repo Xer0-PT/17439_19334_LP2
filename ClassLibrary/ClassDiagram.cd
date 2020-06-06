@@ -1,14 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Pandemic.Case">
-    <Position X="2.75" Y="0.5" Width="1.5" />
+  <Class Name="Pandemic.Case" Collapsed="true">
+    <Position X="2.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAA8AAAQhAEAAAAEBAQAAABwQAIBQAIAAAAABAAABA=</HashCode>
+      <HashCode>EAAEAAAARAAAAAAAAAAAAAABQAAAAQAAAAAAABAAAAA=</HashCode>
       <FileName>Case.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Pandemic.Person">
-    <Position X="6" Y="0.5" Width="1.5" />
+  <Class Name="Pandemic.Cases" Collapsed="true">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAA8AAAAhAEAAIAEBAQAAAAgQAIBAAIAAAAAAAAABA=</HashCode>
+      <FileName>Cases.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pandemic.Disease">
+    <Position X="7.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAQACAAEAAAAAgAAAAIACAAAQAAAAEAAAAAAA=</HashCode>
+      <FileName>Disease.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pandemic.Diseases">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAQAAEAAAAAAAAACAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>Diseases.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pandemic.Person" Collapsed="true">
+    <Position X="0.5" Y="6.25" Width="1.5" />
     <NestedTypes>
       <Enum Name="Pandemic.Person.Genders" Collapsed="true">
         <TypeIdentifier>
@@ -17,15 +38,57 @@
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>QAAAkEAAAABAQACAAEAQkABAAAVAAAAwAACACAQAgFo=</HashCode>
+      <HashCode>QAAAAEAAAABAQACAAEAAgAAAAABAAAAIAACACABAgAg=</HashCode>
       <FileName>Person.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Pandemic.Regions">
-    <Position X="9.75" Y="0.75" Width="1.5" />
+  <Class Name="Pandemic.Persons">
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABCAAAAAgAAAQAIAAAAQAAAAIAAAAEAAEIRAAABSABA=</HashCode>
+      <HashCode>AAAAkAAAAAAAAAAAAAAQEABAAAQAAAAwAIAAAAQAAFI=</HashCode>
+      <FileName>Persons.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pandemic.Region">
+    <Position X="12.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAgAQAAAAAAAAAAAAAgAAAAAAAAAAABQAAA=</HashCode>
+      <FileName>Region.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pandemic.Regions">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAIAAAAQAAAAIAAAAEAAgIRAAAACABA=</HashCode>
       <FileName>Regions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pandemic.SickPerson">
+    <Position X="5.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAQIAAAACAQAAAAIACAAAAEA=</HashCode>
+      <FileName>SickPerson.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pandemic.SickPersons">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAgAAAAAAAAAAAAAEAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>SickPersons.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pandemic.Symptom">
+    <Position X="10" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAQAACAAAAAgIAAAAAAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Symptom.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pandemic.Symptoms">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAEAAAAAAACAAAAAIAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Symptoms.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
